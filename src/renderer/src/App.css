@@ -1,0 +1,605 @@
+/* Smooth transition */
+* {
+  box-sizing: border-box;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Background */
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #f0fcff 0%, #c6edf6 100%);
+}
+
+body.dark {
+  background: linear-gradient(135deg, #1c2a23 0%, #1a202c 100%);
+}
+
+/* App container */
+.app {
+  width: 520px;
+  max-height: 95vh;
+  padding: 2.5rem;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  color: #1a202c;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app.dark {
+  background: #2d3748;
+  color: #ffffff;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+  border: 1px solid #4a5568;
+}
+
+.app.dark * {
+  color: #ffffff;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  margin: 0;
+  color: inherit;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -1px;
+}
+
+.theme-toggle-btn {
+  border: none;
+  background: #f1f5f9;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  border: 1px solid #e2e8f0;
+}
+
+.theme-toggle-btn:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.app.dark .theme-toggle-btn {
+  background: #4a5568;
+  border-color: #718096;
+  color: #e2e8f0;
+}
+
+.app.dark .theme-toggle-btn:hover {
+  background: #718096;
+}
+
+/* Progress container */
+.progress-container {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.app.dark .progress-container {
+  background: #4a5568;
+  border-color: #718096;
+}
+
+.progress-bar {
+  height: 10px;
+  background: linear-gradient(90deg, #77d9d1, #4f8e9c);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.progress-container p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Input Row */
+.input-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #1a202c;
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #8edbec;
+  background: #ffffff;
+}
+
+.app.dark input {
+  background: #4a5568;
+  border-color: #718096;
+  color: #ffffff;
+}
+
+.app.dark input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.app.dark input:focus {
+  border-color: #8edbec;
+  background: #2d3748;
+}
+
+.date-input {
+  flex: 0 0 160px;
+  min-width: 160px;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+/* Custom Dropdown */
+.custom-dropdown {
+  position: relative;
+  min-width: 120px;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #1a202c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+}
+
+.dropdown-trigger:hover {
+  background: #ffffff;
+  border-color: #8edbec;
+  box-shadow: 0 4px 6px rgba(72, 187, 120, 0.1);
+}
+
+.app.dark .dropdown-trigger {
+  background: #4a5568;
+  border-color: #718096;
+  color: #ffffff;
+}
+
+.app.dark .dropdown-trigger:hover {
+  border-color: #8edbec;
+  background: #2d3748;
+}
+
+.priority-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.priority-low .priority-dot {
+  background-color: #38a169;
+}
+
+.priority-medium .priority-dot {
+  background-color: #d69e2e;
+}
+
+.priority-high .priority-dot {
+  background-color: #c53030;
+}
+
+.chevron {
+  margin-left: auto;
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app.dark .dropdown-options {
+  background: #2d3748;
+  border-color: #4a5568;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-option {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.dropdown-option:hover {
+  background: #f0fff4;
+}
+
+.app.dark .dropdown-option:hover {
+  background: #3c4a5e;
+}
+
+.dropdown-option.active {
+  background: #f0fff4;
+  font-weight: 700;
+}
+
+.app.dark .dropdown-option.active {
+  background: #3c4a5e;
+}
+
+.add-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4cc7c3 0%, #48a1b5 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+  transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(72, 187, 120, 0.4);
+}
+
+/* Grid-backed list */
+.todo-grid {
+  overflow-y: auto;
+  max-height: 320px;
+  padding-right: 4px;
+  background: transparent;
+}
+
+.todo-grid.ag-theme-quartz {
+  --ag-background-color: transparent;
+  --ag-foreground-color: inherit;
+  --ag-border-color: transparent;
+  --ag-row-border-color: transparent;
+  --ag-header-background-color: transparent;
+  --ag-odd-row-background-color: transparent;
+  --ag-font-family: 'Poppins', sans-serif;
+  --ag-font-size: 15px;
+  --ag-wrapper-border-radius: 0;
+  --ag-cell-horizontal-padding: 0;
+  --ag-grid-size: 6px;
+  border: none;
+}
+
+.todo-grid .ag-root-wrapper,
+.todo-grid .ag-root-wrapper-body,
+.todo-grid .ag-root,
+.todo-grid .ag-body-viewport,
+.todo-grid .ag-layout-auto-height,
+.todo-grid .ag-center-cols-viewport,
+.todo-grid .ag-center-cols-container,
+.todo-grid .ag-center-cols-clipper {
+  background: transparent;
+  border: none;
+}
+
+.todo-grid .ag-header,
+.todo-grid .ag-paging-panel,
+.todo-grid .ag-row::before {
+  display: none;
+}
+
+.todo-grid .ag-row {
+  background: transparent;
+}
+
+.todo-grid .ag-cell,
+.todo-grid .ag-cell-wrapper {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.todo-grid .ag-cell-value {
+  width: 100%;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  margin-bottom: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  gap: 12px;
+}
+
+.todo-item:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.app.dark .todo-item {
+  background: #4a5568;
+  border-color: #718096;
+}
+
+.app.dark .todo-item:hover {
+  background: #2d3748;
+}
+
+.todo-item input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #9bffeb;
+  flex: 0 0 auto;
+}
+
+.todo-text {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.95rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.done .todo-text {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.due-date-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: #edf2f7;
+  border: 1px solid #e2e8f0;
+  min-width: 100px;
+}
+
+.due-date-chip strong,
+.due-date-chip span {
+  font-size: 0.72rem;
+  line-height: 1.1;
+}
+
+.due-date-chip strong {
+  font-weight: 700;
+}
+
+.due-date-chip span {
+  opacity: 0.72;
+}
+
+.due-date-chip.upcoming {
+  background: #ebf8ff;
+  border-color: #bee3f8;
+  color: #2b6cb0;
+}
+
+.due-date-chip.overdue {
+  background: #fff5f5;
+  border-color: #fed7d7;
+  color: #c53030;
+}
+
+.app.dark .due-date-chip {
+  background: #2d3748;
+  border-color: #718096;
+}
+
+.app.dark .due-date-chip.upcoming {
+  background: #2a4365;
+  border-color: #4299e1;
+  color: #bee3f8;
+}
+
+.app.dark .due-date-chip.overdue {
+  background: #742a2a;
+  border-color: #fc8181;
+  color: #fed7d7;
+}
+
+.todo-item small {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.low {
+  color: #38a169;
+  background: #c6f6d5;
+}
+
+.medium {
+  color: #d69e2e;
+  background: #feebc8;
+}
+
+.high {
+  color: #c53030;
+  background: #fed7d7;
+}
+
+.app.dark .low {
+  color: #9ae6b4;
+  background: #2f855a;
+}
+
+.app.dark .medium {
+  color: #fbd38d;
+  background: #b7791f;
+}
+
+.app.dark .high {
+  color: #feb2b2;
+  background: #9b2c2c;
+}
+
+.todo-item button {
+  padding: 6px 10px;
+  background: transparent;
+  color: #e53e3e;
+  border: 1px solid #fed7d7;
+  border-radius: 10px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.todo-item button:hover {
+  background: #e53e3e;
+  color: white;
+}
+
+.app.dark .todo-item button {
+  border-color: #9b2c2c;
+  color: #feb2b2;
+}
+
+.app.dark .todo-item button:hover {
+  background: #fc8181;
+  color: #1a202c;
+}
+
+/* Scrollbar */
+.todo-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-grid::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.todo-grid::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.todo-grid::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.empty {
+  text-align: center;
+  opacity: 0.6;
+  padding: 2rem;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .app {
+    width: min(520px, calc(100vw - 24px));
+    padding: 1.5rem;
+  }
+
+  .input-row > * {
+    width: 100%;
+  }
+
+  .custom-dropdown,
+  .date-input,
+  .add-btn {
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .todo-item {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .todo-text {
+    width: calc(100% - 32px);
+    flex-basis: calc(100% - 32px);
+  }
+
+  .due-date-chip {
+    min-width: 0;
+  }
+}

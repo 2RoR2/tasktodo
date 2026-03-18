@@ -1,0 +1,48 @@
+appId: com.rachel.tasktodo
+productName: Task To Do
+copyright: "Copyright 2026"
+
+directories:
+  output: dist-packages
+
+files:
+  - out/**/*
+
+# Windows
+win:
+  icon: resources/icon.png
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: msi
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Task To Do"
+
+msi:
+  oneClick: false
+  perMachine: false
+
+# macOS
+mac:
+  icon: resources/icon.png
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+
+dmg:
+  window:
+    width: 540
+    height: 380
+  
+
