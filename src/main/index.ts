@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { autoUpdater } from 'electron-updater'
 
 function createWindow(): void {
   const icon = join(__dirname, '../../resources/icon.png')
@@ -40,6 +41,19 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
+  // Check for updates when app is ready
+  autoUpdater.checkForUpdatesAndNotify()
+
+  // Optional for listen for update events
+  autoUpdater.on('update-available', () => {
+    console.log('Update available. Downloading...')
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    console.log('Update downloaded. Installing...')
+    autoUpdater.quitAndInstall()
+  })
+
   electronApp.setAppUserModelId('com.electron')
 
   app.on('browser-window-created', (_, window) => {

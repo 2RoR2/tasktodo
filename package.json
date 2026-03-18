@@ -56,33 +56,39 @@
     "vite": "^7.2.6"
   },
   "build": {
-  "appId": "com.rachel.tasktodo",
-  "productName": "Task To Do",
-  "files": [
-    "dist/**/*",
-    "out/**/*",
-    "public/electron.js"
-  ],
-  "directories": {
-    "buildResources": "assets"
-  },
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "2RoR2",
-      "repo": "tasktodo"
+    "appId": "com.rachel.tasktodo",
+    "productName": "Task To Do",
+    "files": [
+      "dist/**/*",
+      "out/**/*",
+      "public/electron.js"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "2RoR2",
+        "repo": "Task-To-Do-"
+      }
+    ],
+    "win": {
+      "icon": "assets/icon.png",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "mac": {
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ]
     }
-  ],
-  "win": {
-    "icon": "assets/icon.png",
-    "target": ["nsis", "portable"]
-  },
-  "mac": {
-    "icon": "assets/icon.icns"
-  },
-  "linux": {
-    "icon": "assets/icon.png",
-    "target": ["AppImage", "tar.gz"]
   }
-}
 }
