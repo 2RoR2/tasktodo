@@ -11,8 +11,10 @@ Implemented flow:
 - The Electron main process checks for updates on app start.
 - Update events are forwarded to the renderer through preload IPC.
 - The renderer shows an in-app "Update Center" card with current version, status, download progress, and a restart/install button.
+- The main process also shows update dialogs when a new release is found and when the download is ready to install.
 - `electron-builder.yml` is configured with `publish.provider: github`.
 - All packaging scripts now call `electron-builder --config electron-builder.yml` so the GitHub publish target and artifact naming stay consistent.
+- The build script clears stale `dist` and `out` artifacts before packaging so old release files do not corrupt new installers.
 
 ### Final release checklist
 

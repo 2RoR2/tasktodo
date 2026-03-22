@@ -5,7 +5,8 @@ import type { UpdateStatus } from '../shared/updater'
 // Custom APIs for renderer
 const api = {
   getAppVersion: (): Promise<string> => electronAPI.ipcRenderer.invoke('app:get-version'),
-  getUpdateStatus: (): Promise<UpdateStatus> => electronAPI.ipcRenderer.invoke('updater:get-status'),
+  getUpdateStatus: (): Promise<UpdateStatus> =>
+    electronAPI.ipcRenderer.invoke('updater:get-status'),
   checkForUpdates: (): Promise<UpdateStatus> => electronAPI.ipcRenderer.invoke('updater:check'),
   installUpdate: (): Promise<void> => electronAPI.ipcRenderer.invoke('updater:install'),
   onUpdateStatusChanged: (callback: (status: UpdateStatus) => void): (() => void) => {

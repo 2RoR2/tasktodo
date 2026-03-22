@@ -26,7 +26,9 @@ export const compareTodos = (left: Todo, right: Todo): number => {
   return right.id - left.id
 }
 
-export const getDueDateMeta = (dueDate: string | null): {
+export const getDueDateMeta = (
+  dueDate: string | null
+): {
   absoluteLabel: string
   relativeLabel: string
   tone: 'neutral' | 'upcoming' | 'overdue'

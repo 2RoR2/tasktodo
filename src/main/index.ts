@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, type MessageBoxOptions } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { autoUpdater, type UpdateInfo, type ProgressInfo } from 'electron-updater'
@@ -10,6 +10,14 @@ let updateStatus: UpdateStatus = {
   stage: 'idle',
   currentVersion: app.getVersion(),
   message: 'Waiting to check for updates.'
+}
+
+function getWindowForDialogs(): BrowserWindow | null {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    return mainWindow
+  }
+
+  return BrowserWindow.getAllWindows().find((window) => !window.isDestroyed()) ?? null
 }
 
 function broadcastUpdateStatus(): void {
@@ -65,6 +73,21 @@ function setupAutoUpdater(): void {
       nextVersion: info.version,
       message: formatUpdateMessage(info)
     })
+
+    const window = getWindowForDialogs()
+    const dialogOptions: MessageBoxOptions = {
+      type: 'info',
+      title: 'Update available',
+      message: `Version ${info.version} is available.`,
+      detail: 'The update is downloading in the background and will be ready to install soon.'
+    }
+
+    if (window) {
+      void dialog.showMessageBox(window, dialogOptions)
+      return
+    }
+
+    void dialog.showMessageBox(dialogOptions)
   })
 
   autoUpdater.on('download-progress', (progress: ProgressInfo) => {
@@ -75,13 +98,32 @@ function setupAutoUpdater(): void {
     })
   })
 
-  autoUpdater.on('update-downloaded', (info) => {
+  autoUpdater.on('update-downloaded', async (info) => {
     setUpdateStatus({
       stage: 'downloaded',
       nextVersion: info.version,
       percent: 100,
       message: `Version ${info.version} is ready. Restart the app to install it.`
     })
+
+    const window = getWindowForDialogs()
+    const dialogOptions: MessageBoxOptions = {
+      type: 'info',
+      title: 'Update ready',
+      message: `Version ${info.version} has been downloaded.`,
+      detail:
+        'Restart now to install the update, or choose Later to install it after closing the app.',
+      buttons: ['Restart now', 'Later'],
+      cancelId: 1,
+      defaultId: 0
+    }
+    const result = window
+      ? await dialog.showMessageBox(window, dialogOptions)
+      : await dialog.showMessageBox(dialogOptions)
+
+    if (result.response === 0) {
+      autoUpdater.quitAndInstall()
+    }
   })
 
   autoUpdater.on('update-not-available', () => {
@@ -147,7 +189,7 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.rachel.tasktodo')
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)

@@ -6,6 +6,7 @@
   "author": "example.com",
   "homepage": "https://electron-vite.org",
   "scripts": {
+    "clean": "node -e \"for (const dir of ['dist','out']) { try { require('fs').rmSync(dir, { recursive: true, force: true }) } catch {} }\"",
     "format": "prettier --write .",
     "lint": "eslint --cache .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
@@ -13,7 +14,7 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
-    "build": "electron-vite build",
+    "build": "npm run clean && electron-vite build",
     "preview": "electron-vite preview",
     "package:win": "npm run build && electron-builder --config electron-builder.yml --win",
     "package:mac": "npm run build && electron-builder --config electron-builder.yml --mac",
