@@ -1,8 +1,24 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import type { UpdateStatus } from '../shared/updater'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  getAppVersion: (): Promise<string> => electronAPI.ipcRenderer.invoke('app:get-version'),
+  getUpdateStatus: (): Promise<UpdateStatus> => electronAPI.ipcRenderer.invoke('updater:get-status'),
+  checkForUpdates: (): Promise<UpdateStatus> => electronAPI.ipcRenderer.invoke('updater:check'),
+  installUpdate: (): Promise<void> => electronAPI.ipcRenderer.invoke('updater:install'),
+  onUpdateStatusChanged: (callback: (status: UpdateStatus) => void): (() => void) => {
+    const subscription = (_event: Electron.IpcRendererEvent, status: UpdateStatus): void =>
+      callback(status)
+
+    electronAPI.ipcRenderer.on('updater:status-changed', subscription)
+
+    return (): void => {
+      electronAPI.ipcRenderer.removeListener('updater:status-changed', subscription)
+    }
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

@@ -5,6 +5,8 @@ import TodoInput from './components/TodoInput'
 import TodoList from './components/TodoList'
 import './App.css'
 import type { Todo, TodoPriority } from './types/todo'
+import UpdatePanel from './components/UpdatePanel'
+import type { UpdateStatus } from '../../shared/updater'
 
 const normalizeTodo = (
   todo: Partial<Todo> & Pick<Todo, 'id' | 'text' | 'done' | 'priority'>
@@ -19,6 +21,13 @@ const normalizeTodo = (
 }
 
 function App(): React.ReactElement {
+  const [appVersion, setAppVersion] = useState('...')
+  const [updateStatus, setUpdateStatus] = useState<UpdateStatus>({
+    stage: 'idle',
+    currentVersion: '...',
+    message: 'Waiting to check for updates.'
+  })
+
   const [todos, setTodos] = useState<Todo[]>(() => {
     const saved = localStorage.getItem('todos')
 
@@ -62,6 +71,34 @@ function App(): React.ReactElement {
     return () => media.removeEventListener('change', listener)
   }, [])
 
+  useEffect(() => {
+    let isMounted = true
+
+    const loadAppMeta = async (): Promise<void> => {
+      const [version, status] = await Promise.all([
+        window.api.getAppVersion(),
+        window.api.getUpdateStatus()
+      ])
+
+      if (!isMounted) return
+
+      setAppVersion(version)
+      setUpdateStatus(status)
+    }
+
+    void loadAppMeta()
+
+    const unsubscribe = window.api.onUpdateStatusChanged((status) => {
+      if (!isMounted) return
+      setUpdateStatus(status)
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
+  }, [])
+
   const addTodo = (text: string, priority: TodoPriority, dueDate: string | null): void => {
     setTodos([...todos, { id: Date.now(), text, done: false, priority, dueDate }])
   }
@@ -78,6 +115,12 @@ function App(): React.ReactElement {
   return (
     <div className={`app ${darkMode ? 'dark' : ''}`}>
       <Header darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />
+      <UpdatePanel
+        appVersion={appVersion}
+        status={updateStatus}
+        onCheckForUpdates={() => window.api.checkForUpdates()}
+        onInstallUpdate={() => window.api.installUpdate()}
+      />
 
       {total > 0 && <ProgressBar progress={progress} />}
 

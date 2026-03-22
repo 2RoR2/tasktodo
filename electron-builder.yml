@@ -3,10 +3,16 @@ productName: Task To Do
 copyright: "Copyright 2026"
 
 directories:
-  output: dist-packages
+  output: dist
+  buildResources: resources
 
 files:
   - out/**/*
+
+publish:
+  provider: github
+  owner: 2RoR2
+  repo: tasktodo
 
 # Windows
 win:
@@ -15,9 +21,7 @@ win:
     - target: nsis
       arch:
         - x64
-    - target: msi
-      arch:
-        - x64
+  artifactName: Task-To-Do-${version}.${ext}
 
 nsis:
   oneClick: false
@@ -25,10 +29,7 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: "Task To Do"
-
-msi:
-  oneClick: false
-  perMachine: false
+  artifactName: Task-To-Do-Setup-${version}.${ext}
 
 # macOS
 mac:
@@ -45,4 +46,3 @@ dmg:
     width: 540
     height: 380
   
-
