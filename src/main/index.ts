@@ -288,8 +288,7 @@ app.whenReady().then(() => {
     if (!app.isPackaged || !hasAutoUpdateConfiguration()) {
       setUpdateStatus({
         stage: 'dev',
-        message:
-          'Install a published release build before running the auto-update workflow.'
+        message: 'Install a published release build before running the auto-update workflow.'
       })
       return updateStatus
     }

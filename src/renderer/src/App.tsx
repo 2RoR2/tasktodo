@@ -75,7 +75,10 @@ function App(): React.ReactElement {
     let isMounted = true
 
     const loadAppMeta = async (): Promise<void> => {
-      const [version, status] = await Promise.all([window.api.getAppVersion(), window.api.getUpdateStatus()])
+      const [version, status] = await Promise.all([
+        window.api.getAppVersion(),
+        window.api.getUpdateStatus()
+      ])
 
       if (!isMounted) return
 
