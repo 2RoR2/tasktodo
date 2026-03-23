@@ -3,6 +3,7 @@ import type { UpdateStatus } from '../shared/updater'
 
 export type AppAPI = {
   getAppVersion: () => Promise<string>
+  getUpdaterVersion: () => Promise<string>
   getUpdateStatus: () => Promise<UpdateStatus>
   checkForUpdates: () => Promise<UpdateStatus>
   installUpdate: () => Promise<void>

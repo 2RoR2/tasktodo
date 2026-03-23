@@ -1,4 +1,13 @@
-import { app, shell, BrowserWindow, ipcMain, dialog, type MessageBoxOptions } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  dialog,
+  Notification,
+  type MessageBoxOptions
+} from 'electron'
+import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { autoUpdater, type UpdateInfo, type ProgressInfo } from 'electron-updater'
@@ -10,6 +19,38 @@ let updateStatus: UpdateStatus = {
   stage: 'idle',
   currentVersion: app.getVersion(),
   message: 'Waiting to check for updates.'
+}
+
+function getUpdaterPackageVersion(): string {
+  try {
+    const packageJsonPath = join(app.getAppPath(), 'package.json')
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
+      dependencies?: Record<string, string>
+      devDependencies?: Record<string, string>
+    }
+
+    return (
+      packageJson.dependencies?.['electron-updater'] ??
+      packageJson.devDependencies?.['electron-updater'] ??
+      'unknown'
+    )
+  } catch {
+    return 'unknown'
+  }
+}
+
+function hasAutoUpdateConfiguration(): boolean {
+  return existsSync(join(process.resourcesPath, 'app-update.yml'))
+}
+
+function getFriendlyUpdateMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error)
+
+  if (message.includes('app-update.yml') || message.includes('ENOENT')) {
+    return 'Auto-update works only from an installed published release, not from the unpacked build.'
+  }
+
+  return message
 }
 
 function getWindowForDialogs(): BrowserWindow | null {
@@ -45,12 +86,46 @@ function formatUpdateMessage(info: UpdateInfo): string {
   return `Version ${info.version} is available and was published on ${publishedAt}.`
 }
 
+function showUpdateNotification(title: string, body: string): void {
+  if (!Notification.isSupported()) return
+
+  new Notification({
+    title,
+    body,
+    icon: join(__dirname, '../../resources/icon.png')
+  }).show()
+}
+
+function revealWindowForUpdatePrompt(window: BrowserWindow | null): BrowserWindow | null {
+  if (!window || window.isDestroyed()) return null
+
+  if (window.isMinimized()) {
+    window.restore()
+  }
+
+  if (!window.isVisible()) {
+    window.show()
+  }
+
+  window.focus()
+  return window
+}
+
 function setupAutoUpdater(): void {
   if (!app.isPackaged) {
     setUpdateStatus({
       stage: 'dev',
       message:
         'Auto-update checks run in the packaged app. Build an installer to test the full flow.'
+    })
+    return
+  }
+
+  if (!hasAutoUpdateConfiguration()) {
+    setUpdateStatus({
+      stage: 'dev',
+      message:
+        'Auto-update works only from an installed published release, not from the unpacked build.'
     })
     return
   }
@@ -74,7 +149,12 @@ function setupAutoUpdater(): void {
       message: formatUpdateMessage(info)
     })
 
-    const window = getWindowForDialogs()
+    showUpdateNotification(
+      'Update available',
+      `Version ${info.version} is downloading in the background.`
+    )
+
+    const window = revealWindowForUpdatePrompt(getWindowForDialogs())
     const dialogOptions: MessageBoxOptions = {
       type: 'info',
       title: 'Update available',
@@ -106,7 +186,12 @@ function setupAutoUpdater(): void {
       message: `Version ${info.version} is ready. Restart the app to install it.`
     })
 
-    const window = getWindowForDialogs()
+    showUpdateNotification(
+      'Update ready to install',
+      `Version ${info.version} has finished downloading. Restart the app to install it.`
+    )
+
+    const window = revealWindowForUpdatePrompt(getWindowForDialogs())
     const dialogOptions: MessageBoxOptions = {
       type: 'info',
       title: 'Update ready',
@@ -137,9 +222,9 @@ function setupAutoUpdater(): void {
 
   autoUpdater.on('error', (error) => {
     setUpdateStatus({
-      stage: 'error',
+      stage: hasAutoUpdateConfiguration() ? 'error' : 'dev',
       percent: undefined,
-      message: error == null ? 'The update check failed.' : error.message
+      message: error == null ? 'The update check failed.' : getFriendlyUpdateMessage(error)
     })
   })
 
@@ -197,12 +282,14 @@ app.whenReady().then(() => {
 
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.handle('app:get-version', () => app.getVersion())
+  ipcMain.handle('app:get-updater-version', () => getUpdaterPackageVersion())
   ipcMain.handle('updater:get-status', () => updateStatus)
   ipcMain.handle('updater:check', async () => {
-    if (!app.isPackaged) {
+    if (!app.isPackaged || !hasAutoUpdateConfiguration()) {
       setUpdateStatus({
         stage: 'dev',
-        message: 'Package the app before running the auto-update workflow.'
+        message:
+          'Install a published release build before running the auto-update workflow.'
       })
       return updateStatus
     }

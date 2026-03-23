@@ -3,9 +3,9 @@ import Header from './components/Header'
 import ProgressBar from './components/ProgressBar'
 import TodoInput from './components/TodoInput'
 import TodoList from './components/TodoList'
+import UpdatePanel from './components/UpdatePanel'
 import './App.css'
 import type { Todo, TodoPriority } from './types/todo'
-import UpdatePanel from './components/UpdatePanel'
 import type { UpdateStatus } from '../../shared/updater'
 
 const normalizeTodo = (
@@ -75,10 +75,7 @@ function App(): React.ReactElement {
     let isMounted = true
 
     const loadAppMeta = async (): Promise<void> => {
-      const [version, status] = await Promise.all([
-        window.api.getAppVersion(),
-        window.api.getUpdateStatus()
-      ])
+      const [version, status] = await Promise.all([window.api.getAppVersion(), window.api.getUpdateStatus()])
 
       if (!isMounted) return
 

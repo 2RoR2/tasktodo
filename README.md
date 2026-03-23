@@ -2,7 +2,7 @@
 
 An Electron application with React and TypeScript
 
-## Task 1.4 Auto-Update
+## Task 1.3 Auto-Update
 
 This project uses `electron-updater` with `electron-builder` publishing to GitHub Releases.
 
@@ -15,6 +15,9 @@ Implemented flow:
 - `electron-builder.yml` is configured with `publish.provider: github`.
 - All packaging scripts now call `electron-builder --config electron-builder.yml` so the GitHub publish target and artifact naming stay consistent.
 - The build script clears stale `dist` and `out` artifacts before packaging so old release files do not corrupt new installers.
+- `v1.1.0` includes a visible UI change: task overview cards at the top of the app.
+
+The full completion workflow is documented in [TASK-1.3-AUTO-UPDATE-WORKFLOW.md](/c:/Users/User/Documents/tasktodo/TASK-1.3-AUTO-UPDATE-WORKFLOW.md).
 
 ### Final release checklist
 
